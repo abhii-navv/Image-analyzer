@@ -107,7 +107,8 @@ ai_wildlife_analyzer/
 |---|---|
 | `GEMINI_API_KEY` | Your Google Gemini API key |
 
-> Never commit your `.env` file. It is listed in `.gitignore`.
+
+
 
 ---
 
