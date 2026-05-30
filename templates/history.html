@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>History — Wildlife Lens</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <span class="logo-dot"></span>
+      Wildlife Lens
+    </div>
+    <nav class="header-nav">
+      <a href="/" class="nav-link">&#8592; Analyze photo</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1 class="result-title">History</h1>
+
+    {% if entries %}
+    <div class="history-grid">
+      {% for entry in entries %}
+      <a href="/history/{{ entry.id }}" class="history-card">
+        <div class="history-img-wrap">
+          <img src="/static/uploads/{{ entry.filename }}" alt="{{ entry.original_name }}" />
+        </div>
+        <div class="history-info">
+          <div class="history-name">{{ entry.original_name }}</div>
+          <div class="history-date">{{ entry.date }}</div>
+          <div class="history-badges">
+            <span class="badge badge-sm
+              {% if entry.lighting == 'Balanced' %}badge-balanced
+              {% elif entry.lighting in ['Underexposed', 'Slightly Dark'] %}badge-under
+              {% else %}badge-over{% endif %}">
+              {{ entry.lighting }}
+            </span>
+            <span class="badge badge-sm
+              {% if entry.focus in ['Sharp', 'Mostly Sharp'] %}badge-sharp
+              {% else %}badge-blurry{% endif %}">
+              {{ entry.focus }}
+            </span>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">&#128247;</div>
+      <p>No photos analyzed yet.</p>
+      <a href="/" class="analyze-btn" style="display:inline-block;width:auto;padding:0.75rem 2rem;text-decoration:none;border-radius:14px;">
+        Analyze your first photo
+      </a>
+    </div>
+    {% endif %}
+  </main>
+
+</body>
+</html>
