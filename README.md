@@ -5,6 +5,9 @@ A clean, professional web app that analyzes wildlife photos and generates instan
 ![Python](https://img.shields.io/badge/Python-3.10+-4E9E72?style=flat-square&logo=python&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-3.1-4E9E72?style=flat-square&logo=flask&logoColor=white)
 ![Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-4E9E72?style=flat-square&logo=google&logoColor=white)
+![Live](https://img.shields.io/badge/Live-onrender.com-4E9E72?style=flat-square&logo=render&logoColor=white)
+
+**🌿 Live Demo → [image-analyzer-1-8u5g.onrender.com](https://image-analyzer-2.onrender.com/)**
 
 ---
 
@@ -12,7 +15,6 @@ A clean, professional web app that analyzes wildlife photos and generates instan
 
 ![Home Page](images/home.png)
 ![Results Page](images/results.png)
-![History Page](images/history.png)
 
 ---
 
@@ -23,18 +25,18 @@ A clean, professional web app that analyzes wildlife photos and generates instan
 - Full Lightroom editing settings (Light, Color, Effects, Detail, Color Grading)
 - Full Snapseed editing settings (Tune Image, Details, Curves, HDR, and more)
 - 7 beginner tips tailored to the specific photo
-- Analysis history — browse and revisit all past results
 - Clean dark UI with professional typography
 
 ---
 
 ## Tech Stack
 
-- **Backend** — Python, Flask
+- **Backend** — Python, Flask, Gunicorn
 - **AI** — Google Gemini 2.5 Flash (via `google-generativeai`)
 - **Image Analysis** — OpenCV, NumPy
 - **Frontend** — HTML, CSS, Vanilla JS
 - **Fonts** — Playfair Display, DM Mono, Outfit
+- **Deployed on** — Render
 
 ---
 
@@ -84,13 +86,13 @@ Open your browser at `http://127.0.0.1:5000`
 ai_wildlife_analyzer/
 ├── app.py                   # Flask app & routes
 ├── requirements.txt         # Python dependencies
+├── Procfile                 # Deployment config
 ├── services/
 │   ├── image_analysis.py    # OpenCV brightness & blur analysis
 │   └── suggestion_engine.py # Gemini AI integration & parser
 ├── templates/
 │   ├── index.html           # Upload page
 │   ├── results.html         # Results page
-│   ├── history.html         # History page
 │   └── error.html           # Error page
 ├── static/
 │   ├── css/style.css        # All styles
@@ -107,8 +109,7 @@ ai_wildlife_analyzer/
 |---|---|
 | `GEMINI_API_KEY` | Your Google Gemini API key |
 
-
-
+> Never commit your `.env` file. It is listed in `.gitignore`.
 
 ---
 
