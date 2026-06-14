@@ -42,6 +42,27 @@
         {% else %}badge-blurry{% endif %}">
         &#9673;&nbsp; {{ focus }}
       </span>
+      <span class="badge
+        {% if contrast == 'Good Contrast' %}badge-balanced
+        {% elif contrast == 'High Contrast' %}badge-over
+        {% else %}badge-under{% endif %}">
+        &#9636;&nbsp; {{ contrast }}
+      </span>
+    </div>
+
+    <div class="metrics-panel">
+      <div class="metric">
+        <span class="metric-label">Brightness</span>
+        <span class="metric-value">{{ brightness_value }}</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Sharpness</span>
+        <span class="metric-value">{{ blur_value }}</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Contrast</span>
+        <span class="metric-value">{{ contrast_value }}</span>
+      </div>
     </div>
 
     <div class="tabs">
