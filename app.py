@@ -47,7 +47,6 @@ def analyze():
     if not allowed_file(file.filename):
         return jsonify({"error": "Invalid file type"}), 400
 
-    ext = file.filename.rsplit('.', 1)[1].lower()
     filename = str(uuid.uuid4()) + '_' + secure_filename(file.filename)
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(filepath)
@@ -56,8 +55,10 @@ def analyze():
     suggestions = get_suggestions(
         analysis['lighting'],
         analysis['focus'],
+        analysis['contrast'],
         analysis['brightness_value'],
         analysis['blur_value'],
+        analysis['contrast_value'],
         filepath
     )
 
@@ -68,8 +69,10 @@ def analyze():
         'date': datetime.now().strftime('%d %b %Y, %I:%M %p'),
         'lighting': analysis['lighting'],
         'focus': analysis['focus'],
+        'contrast': analysis['contrast'],
         'brightness_value': analysis['brightness_value'],
         'blur_value': analysis['blur_value'],
+        'contrast_value': analysis['contrast_value'],
         'lightroom': suggestions['lightroom'],
         'snapseed': suggestions['snapseed'],
         'tips': suggestions['beginner_tips']
@@ -80,8 +83,10 @@ def analyze():
         image_url='/' + filepath.replace('\\', '/'),
         lighting=analysis['lighting'],
         focus=analysis['focus'],
+        contrast=analysis['contrast'],
         brightness_value=analysis['brightness_value'],
         blur_value=analysis['blur_value'],
+        contrast_value=analysis['contrast_value'],
         lightroom=suggestions['lightroom'],
         snapseed=suggestions['snapseed'],
         tips=suggestions['beginner_tips']
@@ -102,12 +107,15 @@ def history_detail(entry_id):
         image_url='/static/uploads/' + entry['filename'],
         lighting=entry['lighting'],
         focus=entry['focus'],
+        contrast=entry.get('contrast', 'N/A'),
         brightness_value=entry['brightness_value'],
         blur_value=entry['blur_value'],
+        contrast_value=entry.get('contrast_value', 'N/A'),
         lightroom=entry['lightroom'],
         snapseed=entry['snapseed'],
         tips=entry['tips']
     )
+
 @app.errorhandler(404)
 def not_found(e):
     return render_template('error.html', code=404, message="Page not found."), 404
