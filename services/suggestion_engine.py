@@ -9,8 +9,8 @@ load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
 
-def get_suggestions(lighting, focus, brightness_value, blur_value, image_path):
-    
+def get_suggestions(lighting, focus, contrast, brightness_value, blur_value, contrast_value, image_path):
+
     with open(image_path, "rb") as f:
         image_data = base64.b64encode(f.read()).decode("utf-8")
 
@@ -25,6 +25,7 @@ You are a world-class wildlife photography editor with 20 years of experience.
 Analyze this wildlife photo carefully. Here is the technical data:
 - Lighting: {lighting} (brightness value: {brightness_value})
 - Focus: {focus} (blur value: {blur_value})
+- Contrast: {contrast} (contrast value: {contrast_value})
 
 Give COMPLETE professional editing settings based on what you actually see in this photo.
 Be very specific with values. Positive values with + sign, negative with - sign.
