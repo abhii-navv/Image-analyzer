@@ -1,24 +1,47 @@
+# Import Gemini AI SDK (new version)
 import google.generativeai as genai
+
+# Load environment variables from .env file
 from dotenv import load_dotenv
+
+# OS module to access environment variables
 import os
+
+# Used to convert image into base64 format (required for API)
 import base64
+
+# Regex module for parsing structured text
 import re
 
+
+# Load variables from .env file into environment
 load_dotenv()
 
+# Get Gemini API key from environment
 api_key = os.getenv("GEMINI_API_KEY")
+
+# Configure Gemini client with API key
 genai.configure(api_key=api_key)
 
+
+# Main function to get editing suggestions from Gemini
 def get_suggestions(lighting, focus, contrast, brightness_value, blur_value, contrast_value, image_path):
 
+    # Open image file in binary mode
     with open(image_path, "rb") as f:
+        # Convert image to base64 string (required for Gemini input)
         image_data = base64.b64encode(f.read()).decode("utf-8")
 
+    # Extract file extension (jpg, png, etc.)
     ext = image_path.rsplit(".", 1)[1].lower()
+
+    # Determine correct MIME type for image
     mime_type = "image/jpeg" if ext in ["jpg", "jpeg"] else "image/" + ext
 
+    # Initialize Gemini model (fast + powerful version)
     model = genai.GenerativeModel("gemini-2.5-flash")
 
+    # Build prompt dynamically using f-string
     prompt = f"""
 You are a world-class wildlife photography editor with 20 years of experience.
 
@@ -177,56 +200,79 @@ Only recommend tools relevant to THIS specific wildlife photo.
 Be specific to what you actually see — animal, background, lighting conditions.
 """
 
+    # Send request to Gemini with image + prompt
     response = model.generate_content([
-        {"mime_type": mime_type, "data": image_data},
-        prompt
+        {"mime_type": mime_type, "data": image_data},  # Image input
+        prompt  # Text prompt
     ])
 
+    # Parse response text into structured output
     return parse_response(response.text)
 
 
+# Function to convert raw Gemini text into structured dictionaries
 def parse_response(text):
-    lightroom = {}
-    snapseed = {}
-    tips = []
 
+    lightroom = {}   # Dictionary to store Lightroom settings
+    snapseed = {}    # Dictionary to store Snapseed settings
+    tips = []        # List to store tips
+
+    # Split response into lines
     lines = text.strip().split("\n")
-    section = None
-    subsection = None
+
+    section = None       # Track current section (LIGHTROOM / SNAPSEED / TIPS)
+    subsection = None    # Track subsection (LIGHT, COLOR, etc.)
 
     for line in lines:
         line = line.strip()
+
+        # Skip empty lines
         if not line:
             continue
 
+        # Identify main sections
         if line == "LIGHTROOM:":
             section = "lightroom"
             subsection = None
+
         elif line == "SNAPSEED:":
             section = "snapseed"
             subsection = None
+
         elif line == "TIPS:":
             section = "tips"
             subsection = None
+
+        # Identify subsections like LIGHT:, COLOR:, etc.
         elif line.endswith(":") and section in ["lightroom", "snapseed"]:
             subsection = line[:-1]
+
+        # Parse Lightroom values
         elif section == "lightroom" and ":" in line:
             key, val = line.split(":", 1)
             val = val.strip()
+
+            # Filter out useless values
             if val and val != "0" and val != "+0" and val != "-0" and val.lower() != "none" and val.lower() != "n/a":
                 full_key = f"{subsection} — {key.strip()}" if subsection else key.strip()
                 lightroom[full_key] = val
+
+        # Parse Snapseed values
         elif section == "snapseed" and ":" in line:
             key, val = line.split(":", 1)
             val = val.strip()
+
             if val and val != "0" and val != "+0" and val != "-0" and val.lower() != "none" and val.lower() != "n/a":
                 full_key = f"{subsection} — {key.strip()}" if subsection else key.strip()
                 snapseed[full_key] = val
+
+        # Extract numbered tips using regex
         elif section == "tips":
             match = re.match(r'^(\d+[\.\)]|\-|\•|\*)\s+(.+)', line)
             if match:
                 tips.append(match.group(2).strip())
 
+    # Return structured output
     return {
         "lightroom": lightroom,
         "snapseed": snapseed,
